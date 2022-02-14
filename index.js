@@ -18,16 +18,21 @@ const { generateRoomCode } = require("./helpers");
 
   // Find a valid room (brute force)
   let found = false;
+  const startTime = Date.now();
   console.log("Searching for room...");
+  // Try random codes until a room is found
   while (!found) {
     const roomCode = generateRoomCode();
     await page.fill("id=roomcode", roomCode);
     const statusSpan = await page.locator("span.status");
     await statusSpan.waitFor();
     const status = await statusSpan.textContent();
+    // If a room is found, end the loop
     if (status !== "Room not found") {
       found = true;
-      console.log(`Room found: ${roomCode}`);
+      console.log(
+        `Room found: ${roomCode}\nTime: ${Math.round(Date.now() - startTime) / 1000}s`
+      );
     }
   }
 
